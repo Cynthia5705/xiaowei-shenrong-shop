@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}订单 #{{ order['id'] }} 已提交 — 小魏参茸土特产{% endblock %}
+
+{% block content %}
+<div class="confirmation card">
+  <div class="confirm-icon">🎉</div>
+  <h1>感谢您的订购，{{ order['customer_name'] }}！</h1>
+  <p>您的订单 <strong>#{{ order['id'] }}</strong> 已提交并支付成功。</p>
+  <p class="muted">（演示环境）确认邮件将发送至 {{ order['email'] }}。</p>
+
+  <table class="cart-table">
+    <thead>
+      <tr><th>商品</th><th>单价</th><th>数量</th><th>小计</th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item['product_name'] }}</td>
+        <td>{{ item['unit_price_cents'] | money }}</td>
+        <td>{{ item['quantity'] }}</td>
+        <td>{{ (item['unit_price_cents'] * item['quantity']) | money }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="total"><td colspan="3">实付金额</td><td>{{ order['total_cents'] | money }}</td></tr>
+    </tfoot>
+  </table>
+
+  <p class="muted">收货地址：{{ order['country'] }} {{ order['city'] }} {{ order['address'] }}
+     （邮编 {{ order['postal_code'] }}）</p>
+
+  <a class="btn btn-primary" href="{{ url_for('shop.index') }}">继续选购</a>
+</div>
+{% endblock %}

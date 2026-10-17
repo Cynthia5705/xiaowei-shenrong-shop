@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{% block admin_title %}管理后台{% endblock %} — 小魏参茸土特产 · 管理后台{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+  <aside class="sidebar admin-nav">
+    <h3>管理后台</h3>
+    <ul class="category-list">
+      <li><a href="{{ url_for('admin.dashboard') }}"
+             class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">数据概览</a></li>
+      <li><a href="{{ url_for('admin.products') }}"
+             class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.product') }}">商品管理</a></li>
+      <li><a href="{{ url_for('admin.orders') }}"
+             class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.order') }}">订单管理</a></li>
+    </ul>
+    <hr>
+    <a href="{{ url_for('shop.index') }}">← 返回商城</a>
+  </aside>
+
+  <section class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </section>
+</div>
+{% endblock %}

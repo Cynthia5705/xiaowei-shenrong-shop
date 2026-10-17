@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ product['name'] }} — 小魏参茸土特产{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+  <a href="{{ url_for('shop.index') }}">全部商品</a>
+  {% if product['category_name'] %}
+    › <a href="{{ url_for('shop.index', category=product['category_slug']) }}">{{ product['category_name'] }}</a>
+  {% endif %}
+  › {{ product['name'] }}
+</nav>
+
+<div class="product-detail">
+  <div class="product-detail-image">{{ product['emoji'] }}</div>
+
+  <div class="product-detail-info">
+    <h1>{{ product['name'] }}</h1>
+    <p class="price price-lg">{{ product['price_cents'] | money }}</p>
+
+    {% if product['stock'] == 0 %}
+      <p class="stock out">暂时缺货</p>
+    {% elif product['stock'] <= 5 %}
+      <p class="stock low">仅剩 {{ product['stock'] }} 件，欲购从速！</p>
+    {% else %}
+      <p class="stock in">库存 {{ product['stock'] }} 件</p>
+    {% endif %}
+
+    <p class="description">{{ product['description'] }}</p>
+
+    {% if product['stock'] > 0 %}
+    <form class="add-to-cart" action="{{ url_for('cart.add', product_id=product['id']) }}" method="post">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <label>数量
+        <input type="number" name="quantity" value="1" min="1" max="{{ product['stock'] }}">
+      </label>
+      <button class="btn btn-primary" type="submit">加入购物车 🛒</button>
+    </form>
+    {% else %}
+    <button class="btn" disabled>暂时缺货</button>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

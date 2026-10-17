@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block admin_title %}商品管理{% endblock %}
+
+{% block admin_content %}
+<div class="catalog-header">
+  <h1>商品管理</h1>
+  <a class="btn btn-primary" href="{{ url_for('admin.product_new') }}">+ 新建商品</a>
+</div>
+
+<table class="cart-table">
+  <thead>
+    <tr><th></th><th>商品名称</th><th>分类</th><th>价格</th><th>库存</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td>{{ p['emoji'] }}</td>
+      <td><a href="{{ url_for('shop.product', slug=p['slug']) }}">{{ p['name'] }}</a></td>
+      <td>{{ p['category_name'] or '—' }}</td>
+      <td>{{ p['price_cents'] | money }}</td>
+      <td>
+        {% if p['stock'] == 0 %}<span class="stock out">{{ p['stock'] }}</span>
+        {% elif p['stock'] <= 5 %}<span class="stock low">{{ p['stock'] }}</span>
+        {% else %}{{ p['stock'] }}{% endif %}
+      </td>
+      <td class="actions">
+        <a class="btn btn-small" href="{{ url_for('admin.product_edit', product_id=p['id']) }}">编辑</a>
+        <form action="{{ url_for('admin.product_delete', product_id=p['id']) }}" method="post"
+              onsubmit="return confirm('确定要删除「{{ p['name'] | e }}」吗？')">
+          <button class="btn btn-small btn-danger" type="submit">删除</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

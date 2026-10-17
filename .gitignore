@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# 本地数据库（部署时会自动重新生成）
+shop.db
+*.sqlite3
+
+# 自动生成的源码打包文件
+ALL_CODE.md
+
+# 环境变量 / 密钥
+.env
+
+# 编辑器
+.vscode/
+.idea/

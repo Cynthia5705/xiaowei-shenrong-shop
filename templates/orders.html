@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}我的订单 — 小魏参茸土特产{% endblock %}
+
+{% block content %}
+<h1>我的订单</h1>
+
+{% if orders %}
+<table class="cart-table">
+  <thead>
+    <tr>
+      <th>订单号</th><th>下单时间</th><th>商品件数</th><th>金额</th><th>状态</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td><a href="{{ url_for('checkout.confirmation', order_id=order['id']) }}">#{{ order['id'] }}</a></td>
+      <td>{{ order['created_at'] }}</td>
+      <td>{{ order['item_count'] }}</td>
+      <td>{{ order['total_cents'] | money }}</td>
+      <td><span class="status status-{{ order['status'] }}">{{ order['status'] | status_label }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state">您还没有订单。<br>
+  <a href="{{ url_for('shop.index') }}">去逛逛 →</a></p>
+{% endif %}
+{% endblock %}

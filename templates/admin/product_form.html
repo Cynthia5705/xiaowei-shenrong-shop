@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% block admin_title %}{{ '编辑商品' if product else '新建商品' }}{% endblock %}
+
+{% block admin_content %}
+<h1>{{ '编辑商品' if product else '新建商品' }}</h1>
+
+<form method="post" class="card checkout-form">
+  <div class="form-grid">
+    <label class="span-2">商品名称
+      <input type="text" name="name" required value="{{ product['name'] if product else '' }}">
+    </label>
+    <label>商品图标（emoji）
+      <input type="text" name="emoji" value="{{ product['emoji'] if product else '📦' }}" maxlength="4">
+    </label>
+    <label>所属分类
+      <select name="category_id">
+        {% for cat in categories %}
+        <option value="{{ cat['id'] }}"
+          {% if product and product['category_id'] == cat['id'] %}selected{% endif %}>
+          {{ cat['name'] }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>价格（元）
+      <input type="number" name="price" step="0.01" min="0" required
+             value="{{ '%.2f' | format(product['price_cents'] / 100) if product else '' }}">
+    </label>
+    <label>库存（件）
+      <input type="number" name="stock" min="0" required
+             value="{{ product['stock'] if product else 10 }}">
+    </label>
+    <label class="span-2">商品描述
+      <textarea name="description" rows="4">{{ product['description'] if product else '' }}</textarea>
+    </label>
+    <label>链接别名 slug <span class="muted">（留空可自动生成）</span>
+      <input type="text" name="slug" value="{{ product['slug'] if product else '' }}">
+    </label>
+  </div>
+
+  <button class="btn btn-primary" type="submit">
+    {{ '保存修改' if product else '创建商品' }}
+  </button>
+  <a class="btn btn-link" href="{{ url_for('admin.products') }}">取消</a>
+</form>
+{% endblock %}

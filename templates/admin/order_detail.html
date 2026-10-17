@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% block admin_title %}订单 #{{ order['id'] }}{% endblock %}
+
+{% block admin_content %}
+<h1>订单 #{{ order['id'] }}</h1>
+<p>
+  <span class="status status-{{ order['status'] }}">{{ order['status'] | status_label }}</span>
+  &nbsp;·&nbsp; {{ order['created_at'] }} &nbsp;·&nbsp; 客户：<strong>{{ order['username'] }}</strong>
+</p>
+
+<div class="checkout-layout">
+  <div class="card">
+    <h2>商品明细</h2>
+    <table class="cart-table">
+      <thead><tr><th>商品</th><th>单价</th><th>数量</th><th>小计</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item['product_name'] }}</td>
+          <td>{{ item['unit_price_cents'] | money }}</td>
+          <td>{{ item['quantity'] }}</td>
+          <td>{{ (item['unit_price_cents'] * item['quantity']) | money }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="total"><td colspan="3">订单总额</td><td>{{ order['total_cents'] | money }}</td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>修改状态</h2>
+    <form method="post" class="checkout-form">
+      <label>订单状态
+        <select name="status">
+          {% for status in statuses %}
+          <option value="{{ status }}" {% if order['status'] == status %}selected{% endif %}>
+            {{ status | status_label }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="btn btn-primary" type="submit">保存</button>
+    </form>
+
+    <h2>收货信息</h2>
+    <p>
+      {{ order['customer_name'] }}<br>
+      {{ order['country'] }} {{ order['city'] }} {{ order['address'] }}<br>
+      邮编：{{ order['postal_code'] }}<br>
+      📧 {{ order['email'] }}
+    </p>
+  </div>
+</div>
+{% endblock %}

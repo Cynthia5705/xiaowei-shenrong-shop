@@ -1,0 +1,14 @@
+# Render 部署配置（可选）：把仓库连到 Render 后会自动读取本文件
+# 免费方案：https://render.com  →  New  →  Blueprint  →  选择本仓库
+services:
+  - type: web
+    name: xiaowei-shenrong-shop
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.12.6"

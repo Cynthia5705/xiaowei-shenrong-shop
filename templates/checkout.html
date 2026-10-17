@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}结算 — 小魏参茸土特产{% endblock %}
+
+{% block content %}
+<h1>订单结算</h1>
+
+<div class="checkout-layout">
+  <form method="post" class="checkout-form card">
+    <h2>收货信息</h2>
+    <div class="form-grid">
+      <label>收货人姓名
+        <input type="text" name="customer_name" required value="{{ current_user['username'] if current_user else '' }}">
+      </label>
+      <label>电子邮箱
+        <input type="email" name="email" required value="{{ current_user['email'] if current_user else '' }}">
+      </label>
+      <label class="span-2">详细地址
+        <input type="text" name="address" required placeholder="如：长白山北路 88 号 3 单元 501">
+      </label>
+      <label>城市
+        <input type="text" name="city" required placeholder="长春市">
+      </label>
+      <label>省份 / 地区
+        <input type="text" name="country" required placeholder="吉林省">
+      </label>
+      <label>邮政编码
+        <input type="text" name="postal_code" required placeholder="130000">
+      </label>
+    </div>
+
+    <h2>支付方式 <span class="muted">（模拟，不会真实扣款）</span></h2>
+    <div class="form-grid">
+      <label class="span-2">银行卡号
+        <input type="text" name="card_number" required inputmode="numeric"
+               placeholder="4242 4242 4242 4242" maxlength="19">
+      </label>
+      <label>有效期
+        <input type="text" placeholder="12/28" disabled>
+      </label>
+      <label>安全码 CVC
+        <input type="text" placeholder="123" disabled>
+      </label>
+    </div>
+    <p class="muted">提示：演示环境，任意 16 位数字均可通过验证。</p>
+
+    <button class="btn btn-primary btn-block" type="submit">
+      确认支付 {{ total | money }}
+    </button>
+  </form>
+
+  <aside class="checkout-summary card">
+    <h2>订单摘要</h2>
+    {% for line in lines %}
+    <div class="summary-row">
+      <span>{{ line['product']['emoji'] }} {{ line['product']['name'] }} × {{ line['quantity'] }}</span>
+      <span>{{ line['line_total'] | money }}</span>
+    </div>
+    {% endfor %}
+    <hr>
+    <div class="summary-row"><span>商品小计</span><span>{{ subtotal | money }}</span></div>
+    <div class="summary-row">
+      <span>运费</span>
+      <span>{% if shipping %}{{ shipping | money }}{% else %}免运费{% endif %}</span>
+    </div>
+    <div class="summary-row total"><span>应付合计</span><span>{{ total | money }}</span></div>
+  </aside>
+</div>
+{% endblock %}

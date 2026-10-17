@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}小魏参茸土特产 — 商品列表{% endblock %}
+
+{% block content %}
+<div class="catalog-layout">
+  <aside class="sidebar">
+    <h3>商品分类</h3>
+    <ul class="category-list">
+      <li>
+        <a href="{{ url_for('shop.index') }}"
+           class="{{ 'active' if not active_category }}">全部商品</a>
+      </li>
+      {% for cat in categories %}
+      <li>
+        <a href="{{ url_for('shop.index', category=cat['slug']) }}"
+           class="{{ 'active' if active_category == cat['slug'] }}">
+          {{ cat['name'] }} <span class="muted">({{ cat['product_count'] }})</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <section class="catalog">
+    <div class="catalog-header">
+      <h1>{{ heading }}</h1>
+      <span class="muted">共 {{ total }} 件商品</span>
+    </div>
+
+    {% if products %}
+    <div class="product-grid">
+      {% for p in products %}
+      <a class="card product-card" href="{{ url_for('shop.product', slug=p['slug']) }}">
+        <div class="product-emoji">{{ p['emoji'] }}</div>
+        <div class="product-info">
+          <span class="product-category">{{ p['category_name'] or '未分类' }}</span>
+          <h3>{{ p['name'] }}</h3>
+          <div class="product-footer">
+            <span class="price">{{ p['price_cents'] | money }}</span>
+            {% if p['stock'] == 0 %}
+              <span class="stock out">暂时缺货</span>
+            {% elif p['stock'] <= 5 %}
+              <span class="stock low">仅剩 {{ p['stock'] }} 件</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% if pages > 1 %}
+    <nav class="pagination">
+      {% set base = url_for('shop.index', category=active_category, q=query) %}
+      {% if page > 1 %}<a href="{{ base }}&page={{ page - 1 }}">« 上一页</a>{% endif %}
+      <span>第 {{ page }} / {{ pages }} 页</span>
+      {% if page < pages %}<a href="{{ base }}&page={{ page + 1 }}">下一页 »</a>{% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <p class="empty-state">没有找到相关商品。🤷</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
